@@ -1,0 +1,13 @@
+{
+   "require": {
+        "slim/slim": "^3.0",
+        "monolog/monolog": "1.22.0"
+    },
+    "autoload":{
+        "psr-4":{
+            "TicTacToe\\":"src/TicTacToe",
+            "Configuration\\":"conf",
+            "Db\\":"src/Db"
+        }
+    }
+}

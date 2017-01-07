@@ -1,0 +1,11 @@
+<?php
+
+namespace Configuration;
+
+class Settings
+{
+    const DB_HOST = 'localhost';
+    const DB_USER = 'tictactoe';
+    const DB_PASS = 'ttticacoe';
+    const DB_NAME = 'tictactoe';
+}
