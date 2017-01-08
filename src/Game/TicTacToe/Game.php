@@ -7,7 +7,7 @@ use Game\GameAbstract;
 class Game extends GameAbstract 
 {
 	
-	public function create (\Game\Player $challenger, array $opponents, string $channel) : string
+	public function create (\Game\Player $challenger, array $opponents, string $channel) : Game
 	{
 		try {
 			$this->_db->beginTransaction();
@@ -33,11 +33,9 @@ class Game extends GameAbstract
 				
 			}
 			
-			$result = $this->display($channel);
-			
 			$this->_db->commit();
 			
-			return $result;
+			return $this;
 		}
 		catch (\Exception $e) {
 			$this->_db->rollBack();

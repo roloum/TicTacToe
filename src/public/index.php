@@ -35,7 +35,7 @@ $app->post('/tictactoe', function (Request $request, Response $response) {
 	
 	
 	try {
-		$controller = new \Game\Controller();
+		$controller = new \Game\Controller\REST();
 		
 		return $response->withJson($controller->processRequest($data));
 	}
