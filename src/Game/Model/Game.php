@@ -25,10 +25,10 @@ class Game extends Base
 	
 	public function create (string $channel, int $nextPlayerId) : int
 	{
-		$mask = sprintf("INSERT INTO %s (channel_id, next_player_id) VALUES (?, ?)", self::TABLE);
+		$mask = sprintf("INSERT INTO %s (channel_id, next_player_id, status) VALUES (?, ?, ?)", self::TABLE);
 		$stmt = $this->_db->prepare($mask);
 		
-		$stmt->execute(array($channel, $nextPlayerId));
+		$stmt->execute(array($channel, $nextPlayerId, self::STATUS_ACTIVE));
 		
 		$player = $stmt->fetch(\PDO::FETCH_ASSOC);
 		

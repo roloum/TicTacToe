@@ -5,6 +5,8 @@ namespace Game\TicTacToe;
 use \Game\GameAbstract;
 use \Game\GameInterface;
 
+class bad extends \Exception{}
+
 class Game extends GameAbstract 
 {
 	
@@ -12,7 +14,9 @@ class Game extends GameAbstract
 	{
 		try {
 			$this->_db->beginTransaction();
-			$this->_create($challenger, $opponents, $channel);
+			if ($this->_create($challenger, $opponents, $channel)) {
+				throw new \Exception("There is already an active game on this channel");
+			}
 			$this->_db->commit();
 			
 			return $this;
@@ -34,14 +38,18 @@ class Game extends GameAbstract
 	 */
 	public function createDisplay (\Game\Player $challenger, array $opponents, string $channel) : string
 	{
-		$gameExists = false;
-		
 		try {
 			$this->_db->beginTransaction();
-			$this->_create($challenger, $opponents, $channel);
-		}
-		catch (\Game\Exception\ActiveGame $e) {
-			$gameExists = true;
+
+			$result = sprintf(
+				"%s%s",
+				($this->_create($challenger, $opponents, $channel)) ? "" : "There is already an active game on this channel\n",
+				$this->_display($channel)
+			);
+			
+			$this->_db->commit();
+			
+			return $result;
 		}
 		//If there is an error, rollback the transaction and pass the exception to the caller
 		catch (\Exception $e) {
@@ -49,18 +57,9 @@ class Game extends GameAbstract
 		
 			throw $e;
 		}
-		finally {
-			
-			$result = sprintf(
-				"%s%s",
-				($gameExists) ? "There is already an active game on this channel\n" : "",
-				$this->_display($channel)
-			);
-			$this->_db->commit();
-		}
 	}
 	
-	protected function _create (\Game\Player $challenger, array $opponents, string $channel) : GameInterface
+	protected function _create (\Game\Player $challenger, array $opponents, string $channel) : bool
 	{
 			//Check if there is an active game for this channel
 			$active = $this->_model->loadActive($channel);
@@ -81,11 +80,11 @@ class Game extends GameAbstract
 				$this->_playerGameModel->create($challenger->playerId, $gameId, $challenger->type, "X");
 				$this->_playerGameModel->create($opponent->playerId, $gameId, $opponent->type, "O");
 				
-				return $this;
+				return true;
 				
 			}
 			else {
-				throw new \Game\Exception\ActiveGame();
+				return false;
 			}
 			
 	}

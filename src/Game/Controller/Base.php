@@ -125,7 +125,13 @@ abstract class Base implements ControllerInterface
 	 */
 	public function createDisplay(string $challenger, string $opponent, string $channel) : string
 	{
-		return $this->create($challenger, $opponent, $channel)->display($channel);
+		return $this->_game->createDisplay(
+			new Challenger($this->_db, $challenger),
+			array(
+				new Opponent($this->_db, $opponent),
+			),
+			$channel
+		);
 	}
 	
 }
