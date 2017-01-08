@@ -2,7 +2,7 @@
 
 namespace Game\Controller;
 
-class REST extends Base
+class CLI extends Base
 {
 	/**
 	 * 
@@ -19,16 +19,16 @@ class REST extends Base
 			//Initialize game if request is valid
 			$this->_game = new \Game\TicTacToe\Game($this->_db);
 				
-			$text = trim($data["text"]);
+			$cmd = trim($data["text"]);
 				
 			//If there is no text, we display the board
-			if (empty($text)) {
+			if (empty($cmd)) {
 				$result = $this->display($data["channel_id"]);
 			}
 			//Challenge user
-			elseif ($text[0] == "@") {
+			elseif ($cmd == "create" || $cmd[0] == "@") {
 				$challenger = $data["user_name"];
-				$opponent = substr($text, 1, strlen($text)-1);
+				$opponent = substr($cmd, 1, strlen($cmd)-1);
 	
 				if ($challenger != $opponent) {
 					$result = $this->createDisplay($challenger, $opponent, $data["channel_id"]);
@@ -38,8 +38,8 @@ class REST extends Base
 				}
 			}
 			//Make move
-			elseif (preg_match("/[ABC][123]/", $text)) {
-				$result = $this->makeMove($data["user_name"], $data["channel_id"], $text);
+			elseif (preg_match("/[ABC][123]/", $cmd)) {
+				$result = $this->makeMove($data["user_name"], $data["channel_id"], $cmd);
 			}
 			else {
 				$isValidCommand = false;
@@ -51,11 +51,10 @@ class REST extends Base
 		}
 		
 		if  (!$isValidCommand) {
-			$result = "Invalid command\nOptions:\n/ttt <@user> to challenge a user\n" .
-					"/ttt <cell> to make a play\n/ttt to display the current board";
+			$result = "Usage: php cli.php --user_name \"<username>\" --channel_id \"<channel_id>\" --cmd \"<command>\"\n";
 		}
 	
-		return array("text" => $result, "response_type"=> "in_channel");
+		return $result;
 	
 	}
 
@@ -67,19 +66,13 @@ class REST extends Base
 	protected function _isValidRequest(array $data) : bool
 	{
 		//Validate require fields exist
-		if (!isset($data["text"])) {
+		if (!isset($data["cmd"])) {
 			return false;
 		}
 		elseif (!isset($data["channel_id"]) || empty($data["channel_id"])) {
 			return false;
 		}
 		elseif (!isset($data["user_name"]) || empty($data["user_name"])) {
-			return false;
-		}
-	
-		//We only receive one command for the moment
-		$text = trim(preg_replace("/ +/", " ", $data["text"]));
-		if (count(explode(" ", $text)) > 1) {
 			return false;
 		}
 	

@@ -22,21 +22,28 @@ abstract class GameAbstract implements GameInterface
 	 * {@inheritDoc}
 	 * @see \Game\GameInterface::create()
 	 */
-	public abstract function create (\Game\Player $challenger, array $opponents, string $channel);
+	public abstract function create (\Game\Player $challenger, array $opponents, string $channel) : GameInterface;
+	
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * @see \Game\GameInterface::createDisplay()
+	 */
+	public abstract function createDisplay (Player $challenger, array $opponents, string $channel) : string;
 	
 	/**
 	 * 
 	 * {@inheritDoc}
 	 * @see \Game\GameInterface::display()
 	 */
-	public abstract function display (string $channel);
+	public abstract function display (string $channel) : string;
 	
 	/**
 	 * 
 	 * {@inheritDoc}
 	 * @see \Game\GameInterface::makeMove()
 	 */
-	public abstract function makeMove (Player $player, Move $move);
+	public abstract function makeMove (Player $player, Move $move) : string;
 	
 	/**
 	 * 

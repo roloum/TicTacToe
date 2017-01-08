@@ -3,6 +3,7 @@
 namespace Game\Controller;
 
 use Game\Player\{Challenger, Opponent};
+use Game\GameInterface;
 
 /**
  * 
@@ -26,13 +27,6 @@ abstract class Base implements ControllerInterface
 	 * @see \Game\Controller\ControllerInterface::processRequest()
 	 */
 	public abstract function processRequest (array $data) : array;
-
-	/**
-	 * 
-	 * @param array $data
-	 * @return bool
-	 */
-	protected abstract function _isValidRequest(array $data) : bool;
 	
 	/**
 	 * Instantiates the database connection
@@ -56,6 +50,34 @@ abstract class Base implements ControllerInterface
 	}
 	
 	/**
+	 * 
+	 * @param array $data
+	 * @return bool
+	 */
+	protected function _isValidRequest(array $data) : bool
+	{
+		//Validate require fields exist
+		if (!isset($data["text"])) {
+			return false;
+		}
+		elseif (!isset($data["channel_id"]) || empty($data["channel_id"])) {
+			return false;
+		}
+		elseif (!isset($data["user_name"]) || empty($data["user_name"])) {
+			return false;
+		}
+	
+		//We only receive one command for the moment
+		$text = trim(preg_replace("/ +/", " ", $data["text"]));
+		if (count(explode(" ", $text)) > 1) {
+			return false;
+		}
+	
+		return true;
+	
+	}
+
+	/**
 	 * Creates a TicTacToe game
 	 * 
 	 * It first validates there is no ongoing game in the channel
@@ -66,7 +88,7 @@ abstract class Base implements ControllerInterface
 	 * @param string $channel
 	 * @return string
 	 */
-	public function create(string $challenger, string $opponent, string $channel) : \Game\TicTacToe\Game
+	public function create(string $challenger, string $opponent, string $channel) : GameInterface
 	{
 		return $this->_game->create(
 			new Challenger($this->_db, $challenger),
