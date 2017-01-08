@@ -19,7 +19,7 @@ class CLI extends Base
 			//Initialize game if request is valid
 			$this->_game = new \Game\TicTacToe\Game($this->_db);
 				
-			$cmd = trim($data["text"]);
+			$cmd = trim($data["cmd"]);
 				
 			//If there is no text, we display the board
 			if (empty($cmd)) {
@@ -54,7 +54,7 @@ class CLI extends Base
 			$result = "Usage: php cli.php --user_name \"<username>\" --channel_id \"<channel_id>\" --cmd \"<command>\"\n";
 		}
 	
-		return $result;
+		return array("text"=>$result);
 	
 	}
 
