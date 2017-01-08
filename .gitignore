@@ -3,4 +3,4 @@
 .settings
 conf/Settings.php
 src/vendor
-logs/tictactoe.log
+logs
