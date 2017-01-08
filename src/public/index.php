@@ -4,6 +4,8 @@ use \Psr\Http\Message\ResponseInterface as Response;
 
 require '../vendor/autoload.php';
 
+use \Game\Controller;
+
 $app = new \Slim\App;
 
 $container = $app->getContainer();
@@ -18,19 +20,31 @@ $container['logger'] = function($c) {
 };
 
 $app->get('/tictactoe', function (Request $request, Response $response) {
-    //$this->logger->addInfo("Tictactoe invoked");
+    $this->logger->addInfo("Tictactoe GET method invoked");
     $response->getBody()->write(json_encode(array("text"=>"I'm Alive")));
         
     return $response;
 });
 
 $app->post('/tictactoe', function (Request $request, Response $response) {
+	
     $data = $request->getParsedBody();
-    $this->logger->addInfo(serialize($data));
     
-    $response->getBody()->write(json_encode($data));
-
-    return $response;
+	$this->logger->addInfo(sprintf("Tictactoe POST method invoked: %s", json_encode($data)));
+	
+	
+	
+	try {
+		$controller = new \Game\Controller();
+		
+		return $response->withJson($controller->processRequest($data));
+	}
+	catch (Exception $e) {
+		$this->logger->critical($e->getMessage());
+		
+		return $response->withJson(array("text"=>"Server error. We are working on it!"), 500);
+	}
+	
 });
     
 $app->run();

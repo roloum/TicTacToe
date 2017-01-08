@@ -1,0 +1,6 @@
+.buildpath
+.project
+.settings
+conf/Settings.php
+src/vendor
+logs/tictactoe.log

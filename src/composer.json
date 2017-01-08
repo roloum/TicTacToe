@@ -5,9 +5,9 @@
     },
     "autoload":{
         "psr-4":{
-            "TicTacToe\\":"src/TicTacToe",
-            "Configuration\\":"conf",
-            "Db\\":"src/Db"
+            "Game\\":"Game",
+            "Db\\":"Db",
+            "Logger\\":"Logger"
         }
     }
 }
