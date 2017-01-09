@@ -24,21 +24,35 @@ class Move extends Base
 		return $result;
 	}
 
-	public function create (string $channel, int $nextPlayerId) : int
+	public function loadByIndex (int $gameId, int $x, int $y) : array
 	{
-		$mask = sprintf("INSERT INTO %s (channel_id, next_player_id, status) VALUES (?, ?, ?)", Tables::MOVE);
+		$mask = sprintf(
+				"SELECT move_id FROM %s WHERE game_id=? and x=? and y=?",
+				Tables::MOVE
+		);
 		$stmt = $this->_db->prepare($mask);
-
-		$stmt->execute(array($channel, $nextPlayerId, self::STATUS_ACTIVE));
-
-		$player = $stmt->fetch(\PDO::FETCH_ASSOC);
-
-		$moveId = $this->_db->lastInsertId();
+		
+		$stmt->execute(array($gameId, $x, $y));
+		
+		$result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 		
 		$stmt->closeCursor();
 		
-		return $moveId;
-
+		//Return empty array if Player does not exist
+		return $result;
 	}
 
+	public function create (int $gameId, int $playerId, int $x, int $y) : int
+	{
+		$mask = sprintf("INSERT INTO %s (player_id, game_id, x, y) VALUES (?, ?, ?, ?)", Tables::MOVE);
+		$stmt = $this->_db->prepare($mask);
+		
+		$stmt->execute(array($playerId, $gameId, $x, $y));
+		
+		$player = $stmt->fetch(\PDO::FETCH_ASSOC);
+		
+		return $this->_db->lastInsertId();
+		
+	}
+	
 }

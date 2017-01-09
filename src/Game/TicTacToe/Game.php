@@ -5,17 +5,18 @@ namespace Game\TicTacToe;
 use \Game\GameAbstract;
 use \Game\GameInterface;
 
-class bad extends \Exception{}
-
 class Game extends GameAbstract 
 {
+	
+	const NO_GAME = "There is no active game on this channel.";
+	const ACTIVE_GAME = "There is already an active game on this channel";
 	
 	public function create (\Game\Player $challenger, array $opponents, string $channel) : GameInterface
 	{
 		try {
 			$this->_db->beginTransaction();
 			if (!$this->_create($challenger, $opponents, $channel)) {
-				throw new \Game\Exception\ActiveGame("There is already an active game on this channel");
+				throw new \Game\Exception\ActiveGame(self::ACTIVE_GAME);
 			}
 			$this->_db->commit();
 			
@@ -43,7 +44,7 @@ class Game extends GameAbstract
 
 			$result = sprintf(
 				"%s%s",
-				($this->_create($challenger, $opponents, $channel)) ? "" : "There is already an active game on this channel\n",
+				($this->_create($challenger, $opponents, $channel)) ? "" : self::ACTIVE_GAME."\n",
 				$this->_display($channel)
 			);
 			
@@ -114,8 +115,7 @@ class Game extends GameAbstract
 		try {
 			$this->_db->beginTransaction();
 		
-			$this->_load($channel);
-			$result = $this->_display();
+			$result = $this->_load($channel) ? $this->_display() : self::NO_GAME;
 			
 			$this->_db->commit();
 				
@@ -139,9 +139,54 @@ class Game extends GameAbstract
 		return sprintf("Next player is: %s", $this->nextPlayer);
 	}
 	
-	public function makeMove (\Game\Player $player, \Game\Move $move) : string
+	public function makeMoveDisplay (string $player, string $channel, string $cell) : string
 	{
+		$result = "";
 		
+		try {
+			$this->_db->beginTransaction();
+			
+			if (!$this->_load($channel)) {
+				$result = sprintf("%s\n", self::NO_GAME);
+			}
+			elseif ($this->nextPlayer != $player) {
+				$result = "Unathorized player\n";
+			}
+			else {
+				
+				//Create move object
+				$move = new \Game\TicTacToe\Move($this->_db, $this->nextPlayerId, $this->id, $cell);
+				
+				if ($move->exists()) {
+					$result = "Move was already played\n";
+				}
+				else {
+					//Make move
+					$move->create();
+					
+					//Update next player
+					$this->_model->alternateNextPlayer($this->id);
+					
+					//Reload Game object
+					$this->_load($channel);
+				}
+				
+			}
+			
+			//Display new board
+			$result .= $this->_display();
+				
+			$this->_db->commit();
+				
+			return $result;
+		}
+		//If there is an error, rollback the transaction and pass the exception to the caller
+		catch (\Exception $e) {
+			$this->_db->rollBack();
+		
+			throw $e;
+		}
 	}
+	
 }
 

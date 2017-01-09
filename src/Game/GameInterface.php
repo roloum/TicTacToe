@@ -15,6 +15,8 @@ interface GameInterface
 	/**
 	 * Creates the game
 	 * 
+	 * Returns object of type GameInterface. This method is used for test cases.
+	 * 
 	 * @param unknown $challenger
 	 * @param unknown $opponents
 	 * @param unknown $channel
@@ -40,11 +42,12 @@ interface GameInterface
 	public function display (string $channel) : string;
 	
 	/**
-	 * Allows a player to make a move
+	 * Allows a player to make a move and then displays the board
 	 * 
-	 * @param Player $player
-	 * @param Move $move
+	 * @param string $player
+	 * @param string $channel
+	 * @param string $cell
 	 * @return string
 	 */
-	public function makeMove (Player $player, Move $move) : string;
+	public function makeMoveDisplay (string $player, string $channel, string $cell) : string;
 }

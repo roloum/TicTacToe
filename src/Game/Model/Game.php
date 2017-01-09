@@ -41,4 +41,19 @@ class Game extends Base
 		
 	}
 	
+	public function alternateNextPlayer (int $gameId)
+	{
+		$mask = sprintf(
+			"UPDATE %s g, %s pg SET g.next_player_id=pg.player_id" .
+				" WHERE g.game_id=? AND pg.player_id <> g.next_player_id and pg.game_id=g.game_id;",
+			Tables::GAME,
+			Tables::PLAYER_GAME
+		);
+		$stmt = $this->_db->prepare($mask);
+		
+		$stmt->execute(array($gameId));
+		
+		$stmt->closeCursor();
+	}
+	
 }

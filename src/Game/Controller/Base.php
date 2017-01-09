@@ -119,7 +119,7 @@ abstract class Base implements ControllerInterface
 	 */
 	public function makeMove(string $player, string $channel, string $cell) : string
 	{
-		return "Moo";
+		return $this->_game->makeMoveDisplay ($player, $channel, $cell);
 	}
 	
 	/**

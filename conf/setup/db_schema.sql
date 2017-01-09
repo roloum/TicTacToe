@@ -40,6 +40,7 @@ CREATE TABLE IF NOT EXISTS Move (
 	x TINYINT UNSIGNED NOT NULL,
 	y TINYINT UNSIGNED NOT NULL,
 	INDEX Idx_Move_game_id_player_id (game_id, player_id) COMMENT 'Index used when querying moves per game',
+	INDEX Idx_Move_game_id_index (game_id, x, y) COMMENT 'Index used to find out if a move exists in the board',
 	CONSTRAINT FK_Move_player_id FOREIGN KEY (player_id) REFERENCES Player (player_id),
 	CONSTRAINT FK_Move_game_id FOREIGN KEY (game_id) REFERENCES Game (game_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Stores all the moves made in a game'@@

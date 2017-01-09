@@ -44,14 +44,14 @@ abstract class GameAbstract implements GameInterface
 	 * @see \Game\GameInterface::display()
 	 */
 	public abstract function display (string $channel) : string;
-	
+		
 	/**
 	 * 
 	 * {@inheritDoc}
-	 * @see \Game\GameInterface::makeMove()
+	 * @see \Game\GameInterface::makeMoveDisplay()
 	 */
-	public abstract function makeMove (Player $player, Move $move) : string;
-	
+	public abstract function makeMoveDisplay(string $player, string $channel, string $cell) : string;
+		
 	/**
 	 * 
 	 * @param \Db\Connection $db
