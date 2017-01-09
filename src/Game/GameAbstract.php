@@ -16,6 +16,8 @@ abstract class GameAbstract implements GameInterface
 	protected $_model;
 	
 	protected $_playerGameModel;
+	
+	protected $_gameEnded = false;
 
 	public $id;
 	
@@ -23,7 +25,7 @@ abstract class GameAbstract implements GameInterface
 	public $nextPlayer;
 	
 	public $board;
-	
+		
 	/**
 	 * 
 	 * {@inheritDoc}

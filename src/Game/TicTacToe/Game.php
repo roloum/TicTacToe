@@ -5,6 +5,12 @@ namespace Game\TicTacToe;
 use \Game\GameAbstract;
 use \Game\GameInterface;
 
+/**
+ * 
+ * @author Rolando Umana<rolando.umana@gmail.com>
+ *
+ * TicTacToe Game
+ */
 class Game extends GameAbstract 
 {
 	
@@ -136,7 +142,7 @@ class Game extends GameAbstract
 	
 	protected function _displayNextPlayer () : string
 	{
-		return sprintf("Next player is: %s", $this->nextPlayer);
+		return $this->_gameEnded ? "" : sprintf("Next player is: @%s", $this->nextPlayer);
 	}
 	
 	public function makeMoveDisplay (string $player, string $channel, string $cell) : string
@@ -149,32 +155,45 @@ class Game extends GameAbstract
 			if (!$this->_load($channel)) {
 				$result = sprintf("%s\n", self::NO_GAME);
 			}
-			elseif ($this->nextPlayer != $player) {
-				$result = "Unathorized player\n";
-			}
 			else {
-				
-				//Create move object
-				$move = new \Game\TicTacToe\Move($this->_db, $this->nextPlayerId, $this->id, $cell);
-				
-				if ($move->exists()) {
-					$result = "Move was already played\n";
+				if ($this->nextPlayer != $player) {
+					$result = "Unathorized player\n";
 				}
 				else {
-					//Make move
-					$move->create();
 					
-					//Update next player
-					$this->_model->alternateNextPlayer($this->id);
+					//Create move object
+					$move = new \Game\TicTacToe\Move($this->_db, $this->nextPlayerId, $this->id, $cell);
 					
-					//Reload Game object
-					$this->_load($channel);
+					if ($move->exists()) {
+						$result = "Move was already played\n";
+					}
+					else {
+						//Make move
+						$move->create();
+						
+						//Update next player
+						$this->_model->alternateNextPlayer($this->id);
+						
+						//Reload Game object
+						$this->_load($channel);
+						
+						if ($this->board->checkWinner()) {
+							$result = sprintf("@%s won the game!\n", $player);
+							$this->_model->updateStatusWin($this->id);
+							$this->_gameEnded = true;
+						}
+						elseif ($this->board->full) {
+							$result = "It is a draw.\n";
+							$this->_model->updateStatusDraw($this->id);
+							$this->_gameEnded = true;
+						}
+					}
+					
 				}
 				
+				//Display new board
+				$result .= $this->_display();
 			}
-			
-			//Display new board
-			$result .= $this->_display();
 				
 			$this->_db->commit();
 				

@@ -5,7 +5,15 @@ namespace Game\Model;
 class Game extends Base
 {
 	const STATUS_ACTIVE = "active";
+	const STATUS_DRAW = "draw";
+	const STATUS_WIN = "win";
 	
+	/**
+	 * Loads the current active game for a channel
+	 * 
+	 * @param string $channel
+	 * @return array
+	 */
 	public function loadActive (string $channel) : array
 	{
 		$mask = sprintf(
@@ -28,6 +36,13 @@ class Game extends Base
 		return ($result !== false) ? $result : array();
 	}
 	
+	/**
+	 * Creates a game for a given channel and sets the next player id
+	 * 
+	 * @param string $channel
+	 * @param int $nextPlayerId
+	 * @return int
+	 */
 	public function create (string $channel, int $nextPlayerId) : int
 	{
 		$mask = sprintf("INSERT INTO %s (channel_id, next_player_id, status) VALUES (?, ?, ?)", Tables::GAME);
@@ -41,6 +56,11 @@ class Game extends Base
 		
 	}
 	
+	/**
+	 * Switches next player on the game after each move
+	 * 
+	 * @param int $gameId
+	 */
 	public function alternateNextPlayer (int $gameId)
 	{
 		$mask = sprintf(
@@ -52,6 +72,42 @@ class Game extends Base
 		$stmt = $this->_db->prepare($mask);
 		
 		$stmt->execute(array($gameId));
+		
+		$stmt->closeCursor();
+	}
+	
+	/**
+	 * Updates game status to win
+	 * 
+	 * @param int $gameId
+	 */
+	public function updateStatusWin (int $gameId)
+	{
+		$this->_updateStatus($gameId, self::STATUS_WIN);
+	}
+	
+	/**
+	 * Updates game status to Draw
+	 * 
+	 * @param int $gameId
+	 */
+	public function updateStatusDraw (int $gameId)
+	{
+		$this->_updateStatus($gameId, self::STATUS_DRAW);
+	}
+	
+	/**
+	 * Updates game status
+	 * 
+	 * @param int $gameId
+	 * @param string $status
+	 */
+	private function _updateStatus (int $gameId, string $status)
+	{
+		$mask = sprintf("UPDATE %s SET status = ? WHERE game_id=?", Tables::GAME);
+		$stmt = $this->_db->prepare($mask);
+		
+		$stmt->execute(array($status, $gameId));
 		
 		$stmt->closeCursor();
 	}
