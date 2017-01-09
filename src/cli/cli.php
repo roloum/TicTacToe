@@ -7,10 +7,10 @@ use \Game\Controller;
 try {
 	$controller = new \Game\Controller\CLI();
 	
-	$data = getopt("", array("channel_id:", "user_name:", "cmd:"));
+	$data = getopt("", array("channel_id:", "user_name:", "cmd:", "force::"));
 
 	printf("%s\n", $controller->processRequest($data)["text"]);
 }
 catch (Exception $e) {
-	printf("%s\n", $e->getMessage());
+	printf("Exception thrown: %s\n", $e->getMessage());
 }

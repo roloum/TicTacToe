@@ -14,8 +14,8 @@ class Game extends GameAbstract
 	{
 		try {
 			$this->_db->beginTransaction();
-			if ($this->_create($challenger, $opponents, $channel)) {
-				throw new \Exception("There is already an active game on this channel");
+			if (!$this->_create($challenger, $opponents, $channel)) {
+				throw new \Game\Exception\ActiveGame("There is already an active game on this channel");
 			}
 			$this->_db->commit();
 			

@@ -26,12 +26,19 @@ class CLI extends Base
 				$result = $this->display($data["channel_id"]);
 			}
 			//Challenge user
-			elseif ($cmd == "create" || $cmd[0] == "@") {
+			elseif ($cmd[0] == "@") {
 				$challenger = $data["user_name"];
 				$opponent = substr($cmd, 1, strlen($cmd)-1);
 	
 				if ($challenger != $opponent) {
-					$result = $this->createDisplay($challenger, $opponent, $data["channel_id"]);
+					
+					if (isset($data['force'])) {
+						$this->create($challenger, $opponent, $data["channel_id"]);
+						$result = "Game created successfully";
+					}
+					else {
+						$result = $this->createDisplay($challenger, $opponent, $data["channel_id"]);
+					}
 				}
 				else {
 					$result = "You can not challenge yourself";
