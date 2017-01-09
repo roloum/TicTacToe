@@ -107,7 +107,7 @@ abstract class Base implements ControllerInterface
 	 */
 	public function display(string $channel) : string
 	{
-		return $this->_game->display();
+		return $this->_game->display($channel);
 	}
 	
 	/**
