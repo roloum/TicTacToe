@@ -6,12 +6,17 @@ class PlayerGame extends Base
 {
 	const TABLE = "Player_Game";
 	
-	public function create (int $playerId, int $gameId, string $role, string $letter)
+	public function create (array $players)
 	{
-		$mask = sprintf("INSERT INTO %s VALUES (?, ?, ?, ?)", self::TABLE);
+		$mask = sprintf("INSERT INTO %s (player_id, game_id, role, symbol) VALUES (?, ?, ?, ?)", self::TABLE);
+		
 		$stmt = $this->_db->prepare($mask);
 		
-		$stmt->execute(array($playerId, $gameId, $role, $letter));
+		foreach ($players as $player) {
+			$stmt->execute($player);
+		}
+		$stmt->fetch(\PDO::FETCH_ASSOC);
+		
 		$stmt->closeCursor();
 	}
 	

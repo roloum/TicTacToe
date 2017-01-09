@@ -16,6 +16,12 @@ abstract class GameAbstract implements GameInterface
 	protected $_model;
 	
 	protected $_playerGameModel;
+
+	public $id;
+	
+	public $nextPlayerId;
+	
+	public $board;
 	
 	/**
 	 * 

@@ -59,26 +59,36 @@ class Game extends GameAbstract
 		}
 	}
 	
+	protected function _load (string $channel) : bool
+	{
+		$active = $this->_model->loadActive($channel);
+		if (empty($active)) {
+			return false;
+		}
+		
+		return true;
+		
+	}
+	
 	protected function _create (\Game\Player $challenger, array $opponents, string $channel) : bool
 	{
-			//Check if there is an active game for this channel
-			$active = $this->_model->loadActive($channel);
-			
 			//Create game if it does not exist
-			if (empty($active)) {
+			if (!$this->_load($channel)) {
 				
 				//Create players if they do not exist yet
 				$challenger->createIfNotExist();
 				
 				$opponent = array_shift($opponents);
-				$opponent->createIfNotExist()->playerId;
+				$opponent->createIfNotExist();
 								
 				//Create Game
 				$gameId = $this->_model->create($channel, $challenger->playerId);
 				
 				//Associate Players to Game
-				$this->_playerGameModel->create($challenger->playerId, $gameId, $challenger->type, "X");
-				$this->_playerGameModel->create($opponent->playerId, $gameId, $opponent->type, "O");
+				$this->_playerGameModel->create(array(
+					array($opponent->playerId, $gameId, $opponent->type, "O"),
+					array($challenger->playerId, $gameId, $challenger->type, "X"),
+				));
 				
 				return true;
 				

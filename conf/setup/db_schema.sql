@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS Player_Game (
 	player_id	BIGINT UNSIGNED NOT NULL COMMENT 'Player id',
 	game_id	BIGINT UNSIGNED NOT NULL COMMENT 'Game id',
 	role ENUM ('challenger', 'opponent') COMMENT 'Player role in the game',
-	symbol ENUM ('X', 'Y') COMMENT 'Player\'s choice',
+	symbol ENUM ('X', 'O') COMMENT 'Player\'s choice',
 	PRIMARY KEY (player_id, game_id) COMMENT 'Composite key',
 	CONSTRAINT FK_Player_Game_player_id FOREIGN KEY (player_id) REFERENCES Player (player_id),
 	CONSTRAINT FK_Player_Game_game_id FOREIGN KEY (game_id) REFERENCES Game (game_id)
