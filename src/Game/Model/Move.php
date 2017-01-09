@@ -4,12 +4,18 @@ namespace Game\Model;
 
 class Move extends Base
 {
+	const TABLE = "Move";
+	
 	public function loadMoves (int $gameId) : array
 	{
-		$mask = sprintf("SELECT * FROM %s WHERE channel_id=? AND status=?", self::TABLE);
+		$mask = sprintf(
+			"SELECT m.x, m.y, pg.symbol FROM Move m, Player_Game pg WHERE m.game_id=?" .
+				" AND pg.game_id=m.game_id AND pg.player_id=m.player_id",
+			self::TABLE
+		);
 		$stmt = $this->_db->prepare($mask);
 
-		$stmt->execute(array($channel, self::STATUS_ACTIVE));
+		$stmt->execute(array($gameId));
 
 		$result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 

@@ -66,6 +66,11 @@ class Game extends GameAbstract
 			return false;
 		}
 		
+		$this->id = $active["game_id"];
+		
+		$this->board = new \Game\Board\TicTacToe($this->_db, $this->id);
+		$this->board->load();
+		
 		return true;
 		
 	}
@@ -106,7 +111,7 @@ class Game extends GameAbstract
 	
 	protected function _display (string $channel) : string
 	{
-		return "Thai";
+		return $this->board->display();
 	}
 	
 	public function makeMove (\Game\Player $player, \Game\Move $move) : string
