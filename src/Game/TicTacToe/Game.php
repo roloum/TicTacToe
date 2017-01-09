@@ -61,12 +61,14 @@ class Game extends GameAbstract
 	
 	protected function _load (string $channel) : bool
 	{
-		$active = $this->_model->loadActive($channel);
-		if (empty($active)) {
+		$activeGame = $this->_model->loadActive($channel);
+		if (empty($activeGame)) {
 			return false;
 		}
 		
-		$this->id = $active["game_id"];
+		$this->id = $activeGame["game_id"];
+		$this->nextPlayerId = $activeGame["next_player_id"];
+		$this->nextPlayer = $activeGame["user_name"];
 		
 		$this->board = new \Game\Board\TicTacToe($this->_db, $this->id);
 		$this->board->load();
@@ -87,13 +89,16 @@ class Game extends GameAbstract
 				$opponent->createIfNotExist();
 								
 				//Create Game
-				$gameId = $this->_model->create($channel, $challenger->playerId);
+				$this->id = $this->_model->create($channel, $challenger->playerId);
 				
 				//Associate Players to Game
 				$this->_playerGameModel->create(array(
-					array($opponent->playerId, $gameId, $opponent->type, "O"),
-					array($challenger->playerId, $gameId, $challenger->type, "X"),
+					array($opponent->playerId, $this->id, $opponent->type, "O"),
+					array($challenger->playerId, $this->id, $challenger->type, "X"),
 				));
+				
+				//Load Game after it has been created
+				$this->_load($channel);
 				
 				return true;
 				
@@ -106,12 +111,32 @@ class Game extends GameAbstract
 	
 	public function display (string $channel) : string
 	{
-		return $this->_display($channel);
+		try {
+			$this->_db->beginTransaction();
+		
+			$this->_load($channel);
+			$result = $this->_display();
+			
+			$this->_db->commit();
+				
+			return $result;
+		}
+		//If there is an error, rollback the transaction and pass the exception to the caller
+		catch (\Exception $e) {
+			$this->_db->rollBack();
+		
+			throw $e;
+		}
 	}
 	
-	protected function _display (string $channel) : string
+	protected function _display () : string
 	{
-		return $this->board->display();
+		return sprintf("%s\n%s", $this->board->display(), $this->_displayNextPlayer());
+	}
+	
+	protected function _displayNextPlayer () : string
+	{
+		return sprintf("Next player is: %s", $this->nextPlayer);
 	}
 	
 	public function makeMove (\Game\Player $player, \Game\Move $move) : string

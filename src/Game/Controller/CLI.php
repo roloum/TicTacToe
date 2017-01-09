@@ -45,7 +45,7 @@ class CLI extends Base
 				}
 			}
 			//Make move
-			elseif (preg_match("/[ABC][123]/", $cmd)) {
+			elseif (preg_match("/[123][ABC]/", $cmd)) {
 				$result = $this->makeMove($data["user_name"], $data["channel_id"], $cmd);
 			}
 			else {

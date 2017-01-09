@@ -4,13 +4,18 @@ namespace Game\Model;
 
 class Game extends Base
 {
-	const TABLE = "Game";
-	
 	const STATUS_ACTIVE = "active";
 	
 	public function loadActive (string $channel) : array
 	{
-		$mask = sprintf("SELECT * FROM %s WHERE channel_id=? AND status=?", self::TABLE);
+		$mask = sprintf(
+			"SELECT g.*, p.user_name FROM %s g, %s pg, %s p WHERE g.channel_id=? AND g.status=?" .
+				" AND pg.player_id=g.next_player_id AND pg.game_id=g.game_id" .
+				" AND p.player_id=pg.player_id",
+			Tables::GAME,
+			Tables::PLAYER_GAME,
+			Tables::PLAYER
+		);
 		$stmt = $this->_db->prepare($mask);
 		
 		$stmt->execute(array($channel, self::STATUS_ACTIVE));
@@ -25,7 +30,7 @@ class Game extends Base
 	
 	public function create (string $channel, int $nextPlayerId) : int
 	{
-		$mask = sprintf("INSERT INTO %s (channel_id, next_player_id, status) VALUES (?, ?, ?)", self::TABLE);
+		$mask = sprintf("INSERT INTO %s (channel_id, next_player_id, status) VALUES (?, ?, ?)", Tables::GAME);
 		$stmt = $this->_db->prepare($mask);
 		
 		$stmt->execute(array($channel, $nextPlayerId, self::STATUS_ACTIVE));

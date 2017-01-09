@@ -20,6 +20,7 @@ abstract class GameAbstract implements GameInterface
 	public $id;
 	
 	public $nextPlayerId;
+	public $nextPlayer;
 	
 	public $board;
 	

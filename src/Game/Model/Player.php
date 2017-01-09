@@ -4,11 +4,10 @@ namespace Game\Model;
 
 class Player extends Base
 {
-	const TABLE = "Player";
 	
 	public function load (string $userName) : array
 	{
-		$mask = sprintf("SELECT * FROM %s WHERE user_name=?", self::TABLE);
+		$mask = sprintf("SELECT * FROM %s WHERE user_name=?", Tables::PLAYER);
 		$stmt = $this->_db->prepare($mask);
 		
 		$stmt->execute(array($userName));
@@ -23,7 +22,7 @@ class Player extends Base
 	
 	public function create (string $userName) : int
 	{
-		$mask = sprintf("INSERT INTO %s (user_name) VALUES (?)", self::TABLE);
+		$mask = sprintf("INSERT INTO %s (user_name) VALUES (?)", Tables::PLAYER);
 		$stmt = $this->_db->prepare($mask);
 		
 		$stmt->execute(array($userName));
