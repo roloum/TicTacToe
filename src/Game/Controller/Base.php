@@ -88,7 +88,7 @@ abstract class Base implements ControllerInterface
 	 * @param string $channel
 	 * @return string
 	 */
-	public function create(string $challenger, string $opponent, string $channel) : GameInterface
+	protected function _create(string $challenger, string $opponent, string $channel) : GameInterface
 	{
 		return $this->_game->create(
 			new Challenger($this->_db, $challenger),
@@ -105,7 +105,7 @@ abstract class Base implements ControllerInterface
 	 * @param string $channel
 	 * @return string
 	 */
-	public function display(string $channel) : string
+	protected function _display(string $channel) : string
 	{
 		return $this->_game->display($channel);
 	}
@@ -117,7 +117,7 @@ abstract class Base implements ControllerInterface
 	 * @param string $cell
 	 * @return string
 	 */
-	public function makeMove(string $player, string $channel, string $cell) : string
+	protected function _makeMove(string $player, string $channel, string $cell) : string
 	{
 		return $this->_game->makeMoveDisplay ($player, $channel, $cell);
 	}
@@ -130,7 +130,7 @@ abstract class Base implements ControllerInterface
 	 * @param string $channel
 	 * @return string
 	 */
-	public function createDisplay(string $challenger, string $opponent, string $channel) : string
+	protected function _createDisplay(string $challenger, string $opponent, string $channel) : string
 	{
 		return $this->_game->createDisplay(
 			new Challenger($this->_db, $challenger),

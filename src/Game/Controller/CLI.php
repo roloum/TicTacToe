@@ -23,7 +23,7 @@ class CLI extends Base
 				
 			//If there is no text, we display the board
 			if (empty($cmd)) {
-				$result = $this->display($data["channel_id"]);
+				$result = $this->_display($data["channel_id"]);
 			}
 			//Challenge user
 			elseif ($cmd[0] == "@") {
@@ -33,20 +33,20 @@ class CLI extends Base
 				if ($challenger != $opponent) {
 					
 					if (isset($data['force'])) {
-						$this->create($challenger, $opponent, $data["channel_id"]);
-						$result = "Game created successfully";
+						$this->_create($challenger, $opponent, $data["channel_id"]);
+						$result = \Game\GameAbstract::MSG_GAME_CREATED;
 					}
 					else {
-						$result = $this->createDisplay($challenger, $opponent, $data["channel_id"]);
+						$result = $this->_createDisplay($challenger, $opponent, $data["channel_id"]);
 					}
 				}
 				else {
-					$result = "You can not challenge yourself";
+					$result = \Game\GameAbstract::MSG_SELF_CHALLENGE;
 				}
 			}
 			//Make move
 			elseif (preg_match("/[123][ABC]/", $cmd)) {
-				$result = $this->makeMove($data["user_name"], $data["channel_id"], $cmd);
+				$result = $this->_makeMove($data["user_name"], $data["channel_id"], $cmd);
 			}
 			else {
 				$isValidCommand = false;

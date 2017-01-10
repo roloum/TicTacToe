@@ -23,7 +23,7 @@ class REST extends Base
 				
 			//If there is no text, we display the board
 			if (empty($text)) {
-				$result = $this->display($data["channel_id"]);
+				$result = $this->_display($data["channel_id"]);
 			}
 			//Challenge user
 			elseif ($text[0] == "@") {
@@ -31,15 +31,15 @@ class REST extends Base
 				$opponent = substr($text, 1, strlen($text)-1);
 	
 				if ($challenger != $opponent) {
-					$result = $this->createDisplay($challenger, $opponent, $data["channel_id"]);
+					$result = $this->_createDisplay($challenger, $opponent, $data["channel_id"]);
 				}
 				else {
-					$result = "You can not challenge yourself";
+					$result = \Game\GameAbstract::MSG_SELF_CHALLENGE;
 				}
 			}
 			//Make move
 			elseif (preg_match("/[123][ABC]/", $text)) {
-				$result = $this->makeMove($data["user_name"], $data["channel_id"], $text);
+				$result = $this->_makeMove($data["user_name"], $data["channel_id"], $text);
 			}
 			else {
 				$isValidCommand = false;

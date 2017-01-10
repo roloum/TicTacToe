@@ -11,6 +11,22 @@ namespace Game;
 abstract class GameAbstract implements GameInterface
 {
 	
+	const MSG_GAME_CREATED = "Game successfully created.";
+	
+	const MSG_NO_GAME = "There is no active game on this channel.";
+	
+	const MSG_ACTIVE_GAME = "There is already an active game on this channel.";
+	
+	const MSG_SELF_CHALLENGE = "You can not challenge yourself.";
+	
+	const MSG_UNATHORIZED_PLAYER = "Unathorized player.";
+	
+	const MSG_MOVE_ALREADY_PLAYED = "Move was already played.";
+	
+	const MSG_DRAW = "It is a draw.";
+	
+	const MSG_WIN = "won the game!";
+	
 	protected $_db;
 	
 	protected $_model;

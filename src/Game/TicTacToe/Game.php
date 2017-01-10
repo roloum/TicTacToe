@@ -14,15 +14,12 @@ use \Game\GameInterface;
 class Game extends GameAbstract 
 {
 	
-	const NO_GAME = "There is no active game on this channel.";
-	const ACTIVE_GAME = "There is already an active game on this channel";
-	
 	public function create (\Game\Player $challenger, array $opponents, string $channel) : GameInterface
 	{
 		try {
 			$this->_db->beginTransaction();
 			if (!$this->_create($challenger, $opponents, $channel)) {
-				throw new \Game\Exception\ActiveGame(self::ACTIVE_GAME);
+				throw new \Game\Exception\ActiveGame(self::MSG_ACTIVE_GAME);
 			}
 			$this->_db->commit();
 			
@@ -49,8 +46,8 @@ class Game extends GameAbstract
 			$this->_db->beginTransaction();
 
 			$result = sprintf(
-				"%s%s",
-				($this->_create($challenger, $opponents, $channel)) ? "" : self::ACTIVE_GAME."\n",
+				"%s\n%s",
+				($this->_create($challenger, $opponents, $channel)) ? self::MSG_GAME_CREATED : self::MSG_ACTIVE_GAME,
 				$this->_display($channel)
 			);
 			
@@ -121,7 +118,7 @@ class Game extends GameAbstract
 		try {
 			$this->_db->beginTransaction();
 		
-			$result = $this->_load($channel) ? $this->_display() : self::NO_GAME;
+			$result = $this->_load($channel) ? $this->_display() : self::MSG_NO_GAME;
 			
 			$this->_db->commit();
 				
@@ -153,11 +150,11 @@ class Game extends GameAbstract
 			$this->_db->beginTransaction();
 			
 			if (!$this->_load($channel)) {
-				$result = sprintf("%s\n", self::NO_GAME);
+				$result = sprintf("%s\n", self::MSG_NO_GAME);
 			}
 			else {
 				if ($this->nextPlayer != $player) {
-					$result = "Unathorized player\n";
+					$result = sprintf("%\n", self::MSG_UNATHORIZED_PLAYER);
 				}
 				else {
 					
@@ -165,7 +162,7 @@ class Game extends GameAbstract
 					$move = new \Game\TicTacToe\Move($this->_db, $this->nextPlayerId, $this->id, $cell);
 					
 					if ($move->exists()) {
-						$result = "Move was already played\n";
+						$result = sprintf("%s\n", self::MSG_MOVE_ALREADY_PLAYED);
 					}
 					else {
 						//Make move
@@ -178,12 +175,12 @@ class Game extends GameAbstract
 						$this->_load($channel);
 						
 						if ($this->board->checkWinner()) {
-							$result = sprintf("@%s won the game!\n", $player);
+							$result = sprintf("@%s %s\n", $player, self::MSG_WIN);
 							$this->_model->updateStatusWin($this->id);
 							$this->_gameEnded = true;
 						}
 						elseif ($this->board->full) {
-							$result = "It is a draw.\n";
+							$result = sprintf("%s\n", self::MSG_DRAW);
 							$this->_model->updateStatusDraw($this->id);
 							$this->_gameEnded = true;
 						}
