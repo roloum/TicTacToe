@@ -6,9 +6,15 @@ DELIMITER @@
 CREATE TABLE IF NOT EXISTS Player (
 	player_id	BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'Auto-generated player id',
 	user_name	VARCHAR(25) COMMENT 'Slack user name. The reason for saving the username and not the id is because we do not get the opponent user_id in the request',
-	creation_date	DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT 'Row creation datetime',
+	creation_date	DATETIME COMMENT 'Row creation datetime',
 	UNIQUE INDEX Idx_Player_user_name (user_name) COMMENT 'Index used when querying by user_name'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Table that stores players'@@
+
+CREATE TRIGGER Trigger_Player_Before_Insert BEFORE INSERT ON Player
+FOR EACH ROW
+BEGIN
+	SET NEW.creation_date = NOW();
+END@@
 
 CREATE TABLE IF NOT EXISTS Game (
 	game_id	BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'Auto-generated game id',
@@ -16,12 +22,19 @@ CREATE TABLE IF NOT EXISTS Game (
 	status	ENUM('pending','declined','active','draw','win') DEFAULT 'pending' COMMENT 'Different stages of the game',
 	next_player_id BIGINT UNSIGNED NULL DEFAULT NULL COMMENT 'Next turn corresponds to player_id.',
 	winner_player_id BIGINT UNSIGNED NULL DEFAULT NULL COMMENT 'Player that wins the game.',
-	creation_date	DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT 'Row creation datetime',
+	creation_date	DATETIME COMMENT 'Row creation datetime',
 	last_modified	TIMESTAMP COMMENT 'Last time the row was modified',
 	INDEX Idx_Game_channel_id_status (channel_id, status) COMMENT 'Index that allows to query game by channel and status',
 	CONSTRAINT FK_Game_next_player_id FOREIGN KEY (next_player_id) REFERENCES Player (player_id),
 	CONSTRAINT FK_Game_winner_player_id FOREIGN KEY (winner_player_id) REFERENCES Player (player_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Table that stores games'@@
+
+CREATE TRIGGER Trigger_Game_Before_Insert BEFORE INSERT ON Game
+FOR EACH ROW
+BEGIN
+	SET NEW.creation_date = NOW();
+END@@
+
 
 CREATE TABLE IF NOT EXISTS Player_Game (
 	player_id	BIGINT UNSIGNED NOT NULL COMMENT 'Player id',
