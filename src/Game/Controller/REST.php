@@ -57,12 +57,10 @@ class REST extends Base
         }
         
         if  (!$isValidCommand) {
-            $result = "Invalid command\nOptions:\n\"/ttt @user\" to challenge a user\n" .
-                "\"/ttt <cell>\" to make a play (Options are 1A, 1B, 1C, 2A, 2B, 2C, 3A, 3B, 3C)\n" .
-                "\"/ttt\" to display the current board";
+            $result = sprintf("%s\n%s", $this->_displayUsage());
         }
     
-        return array("text" => $result, "response_type"=> "in_channel");
+        return array("text" => sprintf("```%s```", $result), "response_type"=> "in_channel");
     
     }
 
@@ -97,6 +95,13 @@ class REST extends Base
     protected function _isValidClientToken (array $data) : bool
     {
         return $data["token"] == self::CLIENT_TOKEN;
+    }
+
+    protected function _displayUsage () : string
+    {
+        return "Invalid command\nOptions:\n\"/ttt @user\" to challenge a user\n" .
+            "\"/ttt <cell>\" to make a play (Options are 1A, 1B, 1C, 2A, 2B, 2C, 3A, 3B, 3C)\n" .
+            "\"/ttt\" to display the current board";
     }
 
 }

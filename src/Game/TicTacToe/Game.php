@@ -139,7 +139,7 @@ class Game extends GameAbstract
     
     protected function _displayNextPlayer () : string
     {
-        return $this->_gameEnded ? "" : sprintf("Next player is: @%s", $this->nextPlayer);
+        return $this->_gameEnded ? "" : sprintf("Next player is: @%s. Please provide a cell.", $this->nextPlayer);
     }
     
     public function makeMoveDisplay (string $player, string $channel, string $cell) : string
