@@ -60,9 +60,11 @@ class REST extends Base
             $result = sprintf("%s", $this->_displayUsage());
         }
     
+        //Display message in channel only when game is created or moved is played
+        //Do not display errors or the board to the entire channel when a user requests it for themselves
         return array(
         	"text" => sprintf("```%s```", $result),
-        	"response_type"=> (!$isValidCommand || $this->_game->error) ? "ephemeral" : "in_channel"
+        	"response_type"=> (empty($text) || !$isValidCommand || $this->_game->error) ? "ephemeral" : "in_channel"
         );
     
     }
