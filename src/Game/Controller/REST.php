@@ -4,6 +4,8 @@ namespace Game\Controller;
 
 class REST extends Base
 {
+	const CLIENT_TOKEN = "7EBtX0HzVSTyXt5iTJYYwl5X";
+
 	/**
 	 * 
 	 * {@inheritDoc}
@@ -11,6 +13,10 @@ class REST extends Base
 	 */
 	public function processRequest (array $data) : array
 	{
+		if (!$this->_isValidClientToken($data)) {
+			return array("text"=>"Invalid token");
+		}
+
 		$isValidCommand = true;
 		
 		//Request is invalid if it's missing the text parameter
@@ -85,6 +91,11 @@ class REST extends Base
 	
 		return true;
 	
+	}
+
+	protected function _isValidClientToken (array $data) : bool
+	{
+		return $data["token"] == self::CLIENT_TOKEN;
 	}
 
 }
