@@ -19,14 +19,27 @@ abstract class Base implements ControllerInterface
      */
     protected $_db;
     
+    /**
+     * Game object
+     * @var \GameInterface
+     */
     protected $_game;
     
     /**
+     * All controllers must implement a processRequest method
      * 
      * {@inheritDoc}
      * @see \Game\Controller\ControllerInterface::processRequest()
      */
     public abstract function processRequest (array $data) : array;
+    
+    /**
+     * Validates the request parameters
+     * 
+     * @param array $data
+     * @return bool
+     */
+    protected abstract function _isValidRequest (array $data) : bool;
     
     /**
      * Instantiates the database connection
@@ -35,6 +48,7 @@ abstract class Base implements ControllerInterface
      */
     public function __construct()
     {
+    	//Requires configuration file
         $configurationFile = realpath(dirname(__FILE__) . '/../../../conf/Settings.php');
         
         if (false === is_readable($configurationFile)) {
@@ -46,39 +60,13 @@ abstract class Base implements ControllerInterface
         if (false === isset($conf['db'])) {
             throw new \Exception("Database configuration is not defined");
         }
+        
+        //Instantiate database connection
         $this->_db = \Db\Connection::getInstance($conf['db']);
     }
     
     /**
-     * 
-     * @param array $data
-     * @return bool
-     */
-    protected function _isValidRequest(array $data) : bool
-    {
-        //Validate require fields exist
-        if (!isset($data["text"])) {
-            return false;
-        }
-        elseif (!isset($data["channel_id"]) || empty($data["channel_id"])) {
-            return false;
-        }
-        elseif (!isset($data["user_name"]) || empty($data["user_name"])) {
-            return false;
-        }
-    
-        //We only receive one command for the moment
-        $text = trim(preg_replace("/ +/", " ", $data["text"]));
-        if (count(explode(" ", $text)) > 1) {
-            return false;
-        }
-    
-        return true;
-    
-    }
-
-    /**
-     * Creates a TicTacToe game
+     * Creates a game through the Game object
      * 
      * It first validates there is no ongoing game in the channel
      * Then it creates the game
@@ -100,7 +88,7 @@ abstract class Base implements ControllerInterface
     }
     
     /**
-     * Displays the current board
+     * Displays the current board for the game
      * 
      * @param string $channel
      * @return string
@@ -111,6 +99,7 @@ abstract class Base implements ControllerInterface
     }
     
     /**
+     * Makes a move in the game object
      * 
      * @param string $player
      * @param string $channel

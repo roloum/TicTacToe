@@ -10,6 +10,10 @@ namespace Db;
  */
 class Connection
 {
+	/**
+	 * Database connection
+	 * @var \PDO
+	 */
     protected static $_db;
     
     /**
@@ -20,6 +24,7 @@ class Connection
     }
     
     /**
+     * Method that returns the instance for the Database connection
      * 
      * @param array $config
      * @return \PDO
@@ -35,7 +40,7 @@ class Connection
             
             self::$_db = new \PDO($dsn, $config['user'], $config['pass']);
             
-            //Do not convert numeric values to string when fetching
+            //Do not convert numeric values to string when fetching rows
             self::$_db->setAttribute(\PDO::ATTR_EMULATE_PREPARES, false);
             self::$_db->setAttribute(\PDO::ATTR_STRINGIFY_FETCHES, false);
             

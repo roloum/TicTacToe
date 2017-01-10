@@ -2,6 +2,12 @@
 
 namespace Game\Board;
 
+/**
+ * 
+ * @author Rolando Umana<rolando.umana@gmail.com>
+ *
+ * Lists the methods that should be implemented by all the Boaard classes 
+ */
 interface BoardInterface
 {
     /**

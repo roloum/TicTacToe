@@ -13,7 +13,12 @@ use \Game\GameInterface;
  */
 class Game extends GameAbstract 
 {
-    
+    /**
+     * Creates a game in the database
+     * 
+     * {@inheritDoc}
+     * @see \Game\GameAbstract::create()
+     */
     public function create (\Game\Player $challenger, array $opponents, string $channel) : GameInterface
     {
         try {
@@ -36,6 +41,7 @@ class Game extends GameAbstract
     }
     
     /**
+     * Creates a game in the database and immediately displays the board
      * 
      * {@inheritDoc}
      * @see \Game\GameAbstract::createDisplay()
@@ -63,8 +69,15 @@ class Game extends GameAbstract
         }
     }
     
+    /**
+     * Loads the game information from the database
+     * 
+     * @param string $channel
+     * @return bool
+     */
     protected function _load (string $channel) : bool
     {
+    	//Load the data from the Game, Game_Player and Player tables
         $activeGame = $this->_model->loadActive($channel);
         if (empty($activeGame)) {
             return false;
@@ -74,6 +87,7 @@ class Game extends GameAbstract
         $this->nextPlayerId = $activeGame["next_player_id"];
         $this->nextPlayer = $activeGame["user_name"];
         
+        //Load the board
         $this->board = new \Game\Board\TicTacToe($this->_db, $this->id);
         $this->board->load();
         
@@ -81,6 +95,13 @@ class Game extends GameAbstract
         
     }
     
+    /**
+     * Creates the Players and theGame in the database and associate the players to the game 
+     * @param \Game\Player $challenger
+     * @param array $opponents
+     * @param string $channel
+     * @return bool
+     */
     protected function _create (\Game\Player $challenger, array $opponents, string $channel) : bool
     {
             //Create game if it does not exist
@@ -113,6 +134,12 @@ class Game extends GameAbstract
             
     }
     
+    /**
+     * Displays the game board
+     * 
+     * {@inheritDoc}
+     * @see \Game\GameAbstract::display()
+     */
     public function display (string $channel) : string
     {
         try {
@@ -132,16 +159,32 @@ class Game extends GameAbstract
         }
     }
     
+    /**
+     * Displays the board and who the next player is
+     * 
+     * @return string
+     */
     protected function _display () : string
     {
         return sprintf("%s\n%s", $this->board->display(), $this->_displayNextPlayer());
     }
     
+    /**
+     * Returns the information of the next player
+     *  
+     * @return string
+     */
     protected function _displayNextPlayer () : string
     {
         return $this->_gameEnded ? "" : sprintf("Next player is: @%s. Please provide a cell.", $this->nextPlayer);
     }
     
+    /**
+     * Executes a move in the game and immediately displays the board
+     * 
+     * {@inheritDoc}
+     * @see \Game\GameAbstract::makeMoveDisplay()
+     */
     public function makeMoveDisplay (string $player, string $channel, string $cell) : string
     {
         $result = "";

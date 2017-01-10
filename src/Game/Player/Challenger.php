@@ -14,7 +14,10 @@ use Game\Player;
  */
 class Challenger extends Player
 {
-    
+    /**
+     * Challenger player type
+     * @var string
+     */
     const TYPE = 'challenger';
     
     /**

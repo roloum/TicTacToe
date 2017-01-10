@@ -1,4 +1,10 @@
 <?php
+/**
+ * 
+ * @author Rolando Umana<rolando.umana@gmail.com>
+ * 
+ * Entry point for the API, implemented in Slim framework 
+ */
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 
@@ -8,8 +14,10 @@ use \Game\Controller;
 
 $app = new \Slim\App;
 
+//Get application container
 $container = $app->getContainer();
 
+//Set logger object
 $container['logger'] = function($c) {
     
     $logger = new \Monolog\Logger('my_logger');
@@ -19,22 +27,26 @@ $container['logger'] = function($c) {
     return $logger;
 };
 
+//Process the GET request from the index and returns a code 200
+//For whenever slack pings the application URL
 $app->get('/', function (Request $request, Response $response) {
     $this->logger->addInfo("Tictactoe GET method invoked");
-    $response->getBody()->write(json_encode(array("text"=>"I'm Alive")));
+    $response->withJson(array("text"=>"I'm Alive"));
         
     return $response;
 });
 
+//Process the POST request with the TicTacToe command
 $app->post('/', function (Request $request, Response $response) {
     
+	//Retrieve parameters from Request body
     $data = $request->getParsedBody();
     
+    //Log request
     $this->logger->addInfo(sprintf("Tictactoe POST method invoked: %s", json_encode($data)));
     
-    
-    
     try {
+    	//Instantiate controller
         $controller = new \Game\Controller\REST();
         
         return $response->withJson($controller->processRequest($data));
@@ -46,5 +58,6 @@ $app->post('/', function (Request $request, Response $response) {
     }
     
 });
-    
+
+//Run SLIM application
 $app->run();

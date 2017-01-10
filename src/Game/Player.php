@@ -12,14 +12,34 @@ namespace Game;
  */
 abstract class Player
 {
+	/**
+	 * Database connection
+	 * @var \PDO
+	 */
     protected $_db;
     
+    /**
+     * Player model
+     * @var \Game\Model\Player
+     */
     protected $_model;
 
+    /**
+     * Player id
+     * @var int
+     */
     public $playerId;
     
+    /**
+     * Player user name
+     * @var string
+     */
     public $userName;
     
+    /**
+     * Player type
+     * @var string
+     */
     public $type;
     
     /**
@@ -28,7 +48,7 @@ abstract class Player
     protected abstract function _setType();
 
     /**
-     *      * Player constructor
+     * Player constructor
      * Sets the userName and has the child class set the user type
 
      * @param \Db\Connection $db
@@ -44,6 +64,11 @@ abstract class Player
         $this->_model = new \Game\Model\Player($db);
     }
     
+    /**
+     * Creates the player in the database if it does not exist yet
+     * 
+     * @return Player
+     */
     public function createIfNotExist() : Player
     {
         $user = $this->_model->load($this->userName);

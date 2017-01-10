@@ -2,6 +2,13 @@
 
 namespace Game\Model;
 
+/**
+ * 
+ * @author Rolando Umana<rolando.umana@gmail.com>
+ * 
+ * Game model defines the methods that create and retrieve the data related to a game
+ *
+ */
 class Game extends Base
 {
     const STATUS_ACTIVE = "active";

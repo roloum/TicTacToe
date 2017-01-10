@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * @author Rolando Umana<rolando.umana@gmail.com>
+ * 
+ * File that contains the configuration for the staging environment
+ */
+
 return array(
     'db' => array(
         'host' => 'localhost',

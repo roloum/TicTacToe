@@ -65,6 +65,7 @@ class REST extends Base
     }
 
     /**
+     * Validates parameters in REST request
      * 
      * {@inheritDoc}
      * @see \Game\Controller\Base::_isValidRequest()
@@ -92,11 +93,23 @@ class REST extends Base
     
     }
 
+    /**
+     * Validates Slack Token
+     * @todo This should be saved in the database
+     * 
+     * @param array $data
+     * @return bool
+     */
     protected function _isValidClientToken (array $data) : bool
     {
-        return $data["token"] == self::CLIENT_TOKEN;
+        return isset($data["token"]) && $data["token"] == self::CLIENT_TOKEN;
     }
 
+    /**
+     * Display usage when an invalid command is received
+     * 
+     * @return string
+     */
     protected function _displayUsage () : string
     {
         return "Invalid command\nOptions:\n\"/ttt @user\" to challenge a user\n" .

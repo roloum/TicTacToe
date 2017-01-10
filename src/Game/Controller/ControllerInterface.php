@@ -12,6 +12,7 @@ namespace Game\Controller;
 interface ControllerInterface
 {
     /**
+     * Entry point for all controllers
      * 
      * @param array $data
      * @return array

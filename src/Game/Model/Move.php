@@ -2,8 +2,20 @@
 
 namespace Game\Model;
 
+/**
+ * 
+ * @author Rolando Umana<rolando.umana@gmail.com>
+ *
+ * Class contains all methods that access the data in the Move table
+ */
 class Move extends Base
 {
+	/**
+	 * Returns the moves for a game
+	 * 
+	 * @param int $gameId
+	 * @return array
+	 */
     public function loadMoves (int $gameId) : array
     {
         $mask = sprintf(
@@ -24,6 +36,13 @@ class Move extends Base
         return $result;
     }
 
+    /**
+     * Loads a move by game id and index
+     * @param int $gameId
+     * @param int $x
+     * @param int $y
+     * @return array
+     */
     public function loadByIndex (int $gameId, int $x, int $y) : array
     {
         $mask = sprintf(
@@ -42,6 +61,15 @@ class Move extends Base
         return $result;
     }
 
+    /**
+     * Creates a row in the Move table
+     * 
+     * @param int $gameId
+     * @param int $playerId
+     * @param int $x
+     * @param int $y
+     * @return int
+     */
     public function create (int $gameId, int $playerId, int $x, int $y) : int
     {
         $mask = sprintf("INSERT INTO %s (player_id, game_id, x, y) VALUES (?, ?, ?, ?)", Tables::MOVE);

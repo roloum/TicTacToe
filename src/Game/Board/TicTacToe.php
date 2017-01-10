@@ -2,22 +2,62 @@
 
 namespace Game\Board;
 
+/**
+ * 
+ * @author Rolando Umana<rolando.umana@gmail.com>
+ *
+ * Board for the TicTacToe game
+ */
 class TicTacToe implements BoardInterface
 {
+	/**
+	 * Database connection
+	 * @var \PDO
+	 */
     protected $_db;
     
+    /**
+     * Move model that contains all moves made in the board
+     * @var \Game\Model\Move
+     */
     protected $_model;
     
+    /**
+     * Game id from the Game table
+     * @var int
+     */
     protected $_gameId;
     
+    /**
+     * Two dimensional array containing the board moves, used to display the board
+     * @var array
+     */
     protected $_moves = array();
     
+    /**
+     * Array used to check if there is a winner or if the game ended
+     * @var array
+     */
     protected $_boardWinCheck = array();
     
+    /**
+     * Dimension of the TicTacToe game board 3x3
+     * @var integer
+     */
     public $dimension = 3;
     
+    /**
+     * Attribute set to true if the game ended
+     * @var bool
+     */
     public $full = false;
     
+    /**
+     * Class constructor, receives the database connection and instantiates the Move model
+     * 
+     * @param \PDO $db
+     * @param int $gameId
+     */
     public function __construct(\PDO $db, int $gameId)
     {
         $this->_db = $db;
@@ -28,6 +68,7 @@ class TicTacToe implements BoardInterface
     }
     
     /**
+     * Loads all the moves from the database into the Board
      * 
      * {@inheritDoc}
      * @see \Game\Board\BoardInterface::load()
@@ -47,6 +88,7 @@ class TicTacToe implements BoardInterface
     /**
      * This method will fill the boardWinCheck array
      * It represents the matrix in a single array, where we can check the winning conditions
+     * 
      * @param array $move
      */
     protected function _fillBoardWinCheck (array $move)
@@ -56,28 +98,37 @@ class TicTacToe implements BoardInterface
     }
     
     /**
+     * Displays the current board
+     * It prepend one row with letters and one column with numbers
+     * To help the user provide a cell for the Move 
      * 
      * {@inheritDoc}
      * @see \Game\Board\BoardInterface::display()
      */
     public function display () : string
     {
+    	//Create a matrix with the moves from the database
+    	//Use spaces for the moves that have not been played
         $board = array();
-        for ($i=0; $i<3; $i++) {
-            for ($j=0; $j<3; $j++) {
+        for ($i=0; $i<$this->dimension; $i++) {
+            for ($j=0; $j<$this->dimension; $j++) {
                 $board[$i][$j] = $this->_moves[$i][$j] ?? " ";
             }
-            //prepend row number
+            //prepend column with numbers for visual aid for the user
             array_unshift($board[$i], $i+1);
         }
+        
+        //prepend row with letters
         array_unshift($board, array("A","B","C"));
         
+        //Implode each of the rows and then array to generate the text for the board 
         return sprintf("    %s\n", implode("\n  |---+---+---|\n", array_map(function ($row) {
             return sprintf("%s |", implode(" | ", $row));
         }, $board)));        
     }
     
     /**
+     * Checks if there's a winner
      * 
      * {@inheritDoc}
      * @see \Game\Board\BoardInterface::checkWinner()
@@ -111,6 +162,7 @@ class TicTacToe implements BoardInterface
     }
     
     /**
+     * Returns array with winning conditions
      * 
      * {@inheritDoc}
      * @see \Game\Board\BoardInterface::getWinningConditions()
@@ -125,6 +177,7 @@ class TicTacToe implements BoardInterface
     }
     
     /**
+     * Returns indexes for the row winning conditions
      * 
      * @return array
      */
@@ -134,6 +187,7 @@ class TicTacToe implements BoardInterface
     }
 
     /**
+     * Returns indexes for the column winning conditions
      * 
      * @return array
      */
@@ -143,6 +197,7 @@ class TicTacToe implements BoardInterface
     }
         
     /**
+     * Returns indexes for the diagonal winning conditions
      *
      * @return array
      */

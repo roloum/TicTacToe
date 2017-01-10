@@ -66,6 +66,7 @@ class CLI extends Base
     }
 
     /**
+     * Validates CLI request
      * 
      * {@inheritDoc}
      * @see \Game\Controller\Base::_isValidRequest()

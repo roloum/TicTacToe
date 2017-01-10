@@ -27,17 +27,46 @@ abstract class GameAbstract implements GameInterface
     
     const MSG_WIN = "won the game!";
     
+    /**
+     * Database connection
+     * @var \PDO
+     */
     protected $_db;
     
+    /**
+     * Game model
+     * @var \Game\Model\Game
+     */
     protected $_model;
     
+    /**
+     * Player_Game model
+     * @var \Game\Model\PlayerGame
+     */
     protected $_playerGameModel;
     
+    /**
+     * Set to true when game ends
+     * @var bool
+     */
     protected $_gameEnded = false;
 
+    /**
+     * Game id
+     * @var int
+     */
     public $id;
     
+    /**
+     * Id of the player that needs to make the next move
+     * @var string
+     */
     public $nextPlayerId;
+    
+    /**
+     * Next player user_name
+     * @var string
+     */
     public $nextPlayer;
     
     public $board;
@@ -71,6 +100,7 @@ abstract class GameAbstract implements GameInterface
     public abstract function makeMoveDisplay(string $player, string $channel, string $cell) : string;
         
     /**
+     * Instantiates the Game and the Player_Game models
      * 
      * @param \Db\Connection $db
      */
