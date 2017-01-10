@@ -4,7 +4,8 @@ namespace Game\Controller;
 
 class REST extends Base
 {
-    const CLIENT_TOKEN = "7EBtX0HzVSTyXt5iTJYYwl5X";
+
+    protected $_slackTokenModel;
 
     /**
      * 
@@ -107,7 +108,12 @@ class REST extends Base
      */
     protected function _isValidClientToken (array $data) : bool
     {
-        return isset($data["token"]) && $data["token"] == self::CLIENT_TOKEN;
+        $this->_slackTokenModel = new \Game\Model\SlackToken($this->_db);
+
+        $tokens = array_map(function ($row) {
+            return $row["token"];
+        }, $this->_slackTokenModel->load());
+        return isset($data["token"]) && in_array($data["token"], $tokens);
     }
 
     /**

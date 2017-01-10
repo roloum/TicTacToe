@@ -33,4 +33,10 @@ class Tables
      * @var string
      */
     const MOVE = "Move";
+
+    /**
+     * Slack_Token table
+     * @var string
+     */
+    const SLACK_TOKEN = "Slack_Token";
 }

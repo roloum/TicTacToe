@@ -58,4 +58,8 @@ CREATE TABLE IF NOT EXISTS Move (
 	CONSTRAINT FK_Move_game_id FOREIGN KEY (game_id) REFERENCES Game (game_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Stores all the moves made in a game'@@
 
+CREATE TABLE IF NOT EXISTS Slack_Token (
+	token	VARCHAR(200) COMMENT 'Slack token'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Table that stores Slack tokens'@@
+
 DELIMITER ;
