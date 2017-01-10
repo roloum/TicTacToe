@@ -2,5 +2,4 @@
 .project
 .settings
 conf/Settings.php
-src/vendor
 logs
