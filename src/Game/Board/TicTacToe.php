@@ -162,48 +162,46 @@ class TicTacToe implements BoardInterface
     }
     
     /**
-     * Returns array with winning conditions
+     * Generates the winning conditions dynamically by traversing
+     * the matrix in order and rotated 90 degrees
      * 
      * {@inheritDoc}
      * @see \Game\Board\BoardInterface::getWinningConditions()
      */
-    public function getWinningConditions() : array
-    {
-        return array_merge(
-            $this->_getWinningRows(),
-            $this->_getWinningColumns(),
-            $this->_getWinningDiagonals()
-        );
-    }
-    
-    /**
-     * Returns indexes for the row winning conditions
-     * 
-     * @return array
-     */
-    protected function _getWinningRows () : array
-    {
-        return array(array(0,1,2), array(3,4,5), array(6,7,8));
-    }
-
-    /**
-     * Returns indexes for the column winning conditions
-     * 
-     * @return array
-     */
-    protected function _getWinningColumns () : array
-    {
-        return array(array(0,3,6), array(1,4,7), array(2,5,8));
-    }
-        
-    /**
-     * Returns indexes for the diagonal winning conditions
-     *
-     * @return array
-     */
-    protected function _getWinningDiagonals () : array
-    {
-        return array(array(0,4,8), array(2,4,6));
-    }
+	public function getWinningConditions() : array
+	{
+		/**
+		 * We use a single array to check if there is a winner, so we need to convert the matrix indexes
+		 * to the array index. The formula is index = i*n + j, where n = dimension
+		 * 
+		 * We don't actually rotate the matrix but only calculate the indexes
+		 * rotated i = j
+		 * rotated j = abs(i-(n-1)) where n = dimension
+		 * 
+		 */
+		$conditions = $diagonal = $rotatedDiagonal = array();
+		
+		for ($i=0; $i<$this->dimension; $i++) {
+			
+			$condition = array();
+			$rotatedCondition = array();
+			
+			for ($j=0; $j<$this->dimension; $j++) {
+				$condition[] = $i * $this->dimension + $j;
+				$rotatedCondition[] = $j * 3 + abs($i-($this->dimension-1));
+			}
+			
+			$conditions[] = $condition;
+			$conditions[] = $rotatedCondition;
+			
+			$diagonal[] = $i * $this->dimension + $i;
+			$rotatedDiagonal[] = $i * $this->dimension + abs($i-($this->dimension-1));
+		}
+		
+		$conditions[] = $diagonal;
+		$conditions[] = $rotatedDiagonal;
+		
+		return $conditions;
+	}
     
 }
