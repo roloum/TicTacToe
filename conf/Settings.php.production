@@ -1,0 +1,10 @@
+<?php
+
+return array(
+    'db' => array(
+        'host' => 'localhost',
+        'name' => 'tictactoe',
+        'user' => 'tictactoe',
+        'pass' => 'sl4cK#TtT',
+    ),
+);
