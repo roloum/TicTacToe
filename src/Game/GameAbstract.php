@@ -69,7 +69,17 @@ abstract class GameAbstract implements GameInterface
      */
     public $nextPlayer;
     
+    /**
+     * Board object
+     * @var unknown
+     */
     public $board;
+    
+    /**
+     * Set to true if there is a command that does not result in a move or the game creation
+     * @var bool
+     */
+    public $error = false;
         
     /**
      * 

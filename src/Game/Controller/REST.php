@@ -57,10 +57,13 @@ class REST extends Base
         }
         
         if  (!$isValidCommand) {
-            $result = sprintf("%s\n%s", $this->_displayUsage());
+            $result = sprintf("%s", $this->_displayUsage());
         }
     
-        return array("text" => sprintf("```%s```", $result), "response_type"=> "in_channel");
+        return array(
+        	"text" => sprintf("```%s```", $result),
+        	"response_type"=> (!$isValidCommand || $this->_game->error) ? "ephemeral" : "in_channel"
+        );
     
     }
 

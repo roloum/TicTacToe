@@ -129,6 +129,8 @@ class Game extends GameAbstract
                 
             }
             else {
+            	$this->error = true;
+            	
                 return false;
             }
             
@@ -144,8 +146,15 @@ class Game extends GameAbstract
     {
         try {
             $this->_db->beginTransaction();
-        
-            $result = $this->_load($channel) ? $this->_display() : self::MSG_NO_GAME;
+        	
+            if ($this->_load($channel)) {
+            	$result = $this->_display();
+            }
+            else {
+            	$result = self::MSG_NO_GAME;
+            	$this->error = true;
+            }
+            
             
             $this->_db->commit();
                 
@@ -193,10 +202,12 @@ class Game extends GameAbstract
             $this->_db->beginTransaction();
             
             if (!$this->_load($channel)) {
+            	$this->error = true;
                 $result = sprintf("%s\n", self::MSG_NO_GAME);
             }
             else {
                 if ($this->nextPlayer != $player) {
+                	$this->error = true;
                     $result = sprintf("%s\n", self::MSG_UNATHORIZED_PLAYER);
                 }
                 else {
@@ -206,6 +217,7 @@ class Game extends GameAbstract
                     
                     if ($move->exists()) {
                         $result = sprintf("%s\n", self::MSG_MOVE_ALREADY_PLAYED);
+                        $this->error = true;
                     }
                     else {
                         //Make move
