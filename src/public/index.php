@@ -19,14 +19,14 @@ $container['logger'] = function($c) {
     return $logger;
 };
 
-$app->get('/tictactoe', function (Request $request, Response $response) {
+$app->get('/', function (Request $request, Response $response) {
     $this->logger->addInfo("Tictactoe GET method invoked");
     $response->getBody()->write(json_encode(array("text"=>"I'm Alive")));
         
     return $response;
 });
 
-$app->post('/tictactoe', function (Request $request, Response $response) {
+$app->post('/', function (Request $request, Response $response) {
 	
     $data = $request->getParsedBody();
     
