@@ -154,7 +154,7 @@ class Game extends GameAbstract
 			}
 			else {
 				if ($this->nextPlayer != $player) {
-					$result = sprintf("%\n", self::MSG_UNATHORIZED_PLAYER);
+					$result = sprintf("%s\n", self::MSG_UNATHORIZED_PLAYER);
 				}
 				else {
 					

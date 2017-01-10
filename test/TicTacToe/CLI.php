@@ -76,6 +76,59 @@ class CLI extends TestCase {
 	}
 	
 	/**
+	 * @depends testCreateGame
+	 * 
+	 * Tests only the next user is able to make the move
+	 */
+	public function testUnathorizedPlayer ()
+	{
+		$this->_createGame(LABEL::CHANNEL);
+		$this->_firstMove();
+		
+		$this->assertTrue(false !== strpos($this->_firstMove(), GameAbstract::MSG_UNATHORIZED_PLAYER));
+		
+		//Finish the game in order to continue with next test cases
+		//Because all test cases use the same channel
+		$this->_drawGame();
+	}
+	
+	/**
+	 * @depends testCreateGame
+	 * 
+	 * Tests if a move was made already
+	 */
+	public function testMoveAlreadyPlayed ()
+	{
+		$this->_createGame(LABEL::CHANNEL);
+		$this->_firstMove();
+		
+		$result =  $this->_controller->processRequest(
+			array(LABEL::KEY_USER=>LABEL::OPPONENT, LABEL::KEY_CHANNEL=>LABEL::CHANNEL, LABEL::KEY_CMD=>"1A")
+		)["text"];
+		
+		$this->assertTrue(false !== strpos($result, GameAbstract::MSG_MOVE_ALREADY_PLAYED));
+		
+		//Finish game in order to continue with next test cases
+		$this->_drawGame();
+		
+	}
+	
+	/**
+	 * @depends testCreateGame
+	 * 
+	 * Tests there can be only one game per channel
+	 */
+	public function testOneGamePerChannel ()
+	{
+		$this->_createGame(LABEL::CHANNEL);
+		
+		$this->assertTrue(false !== strpos($this->_createGame(LABEL::CHANNEL), GameAbstract::MSG_ACTIVE_GAME));
+		
+		//Finish the game in order to continue with next test cases
+		$this->_drawGame();
+	}
+	
+	/**
 	 * Creates a game on a given channel
 	 * 
 	 * @param string $channel
