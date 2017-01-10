@@ -27,24 +27,24 @@ $app->get('/', function (Request $request, Response $response) {
 });
 
 $app->post('/', function (Request $request, Response $response) {
-	
+    
     $data = $request->getParsedBody();
     
-	$this->logger->addInfo(sprintf("Tictactoe POST method invoked: %s", json_encode($data)));
-	
-	
-	
-	try {
-		$controller = new \Game\Controller\REST();
-		
-		return $response->withJson($controller->processRequest($data));
-	}
-	catch (Exception $e) {
-		$this->logger->critical($e->getMessage());
-		
-		return $response->withJson(array("text"=>"Server error. We are working on it!"), 500);
-	}
-	
+    $this->logger->addInfo(sprintf("Tictactoe POST method invoked: %s", json_encode($data)));
+    
+    
+    
+    try {
+        $controller = new \Game\Controller\REST();
+        
+        return $response->withJson($controller->processRequest($data));
+    }
+    catch (Exception $e) {
+        $this->logger->critical($e->getMessage());
+        
+        return $response->withJson(array("text"=>"Server error. We are working on it!"), 500);
+    }
+    
 });
     
 $app->run();

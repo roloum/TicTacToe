@@ -5,10 +5,10 @@ namespace Game\Model;
 class Base
 {
 
-	protected $_db;
+    protected $_db;
 
-	public function __construct(\PDO $db)
-	{
-		$this->_db = $db;
-	}
+    public function __construct(\PDO $db)
+    {
+        $this->_db = $db;
+    }
 }

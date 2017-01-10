@@ -13,17 +13,17 @@ use Game\Player;
  */
 class Opponent extends Player
 {
-	
-	const TYPE = 'opponent';
-	
-	/**
-	 * Sets the opponent user type
-	 * 
-	 * {@inheritDoc}
-	 * @see \Game\Player\Base::_setType()
-	 */
-	protected function _setType()
-	{
-		$this->type = self::TYPE;
-	}
+    
+    const TYPE = 'opponent';
+    
+    /**
+     * Sets the opponent user type
+     * 
+     * {@inheritDoc}
+     * @see \Game\Player\Base::_setType()
+     */
+    protected function _setType()
+    {
+        $this->type = self::TYPE;
+    }
 }

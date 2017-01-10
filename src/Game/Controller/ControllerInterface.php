@@ -11,11 +11,11 @@ namespace Game\Controller;
  */
 interface ControllerInterface
 {
-	/**
-	 * 
-	 * @param array $data
-	 * @return array
-	 */
-	public function processRequest (array $data) : array;
-	
+    /**
+     * 
+     * @param array $data
+     * @return array
+     */
+    public function processRequest (array $data) : array;
+    
 }

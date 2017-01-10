@@ -14,17 +14,17 @@ use Game\Player;
  */
 class Challenger extends Player
 {
-	
-	const TYPE = 'challenger';
-	
-	/**
-	 * Sets the user type
-	 * 
-	 * {@inheritDoc}
-	 * @see \Game\Player\Base::_setType()
-	 */
-	protected function _setType()
-	{
-		$this->type = self::TYPE;
-	}
+    
+    const TYPE = 'challenger';
+    
+    /**
+     * Sets the user type
+     * 
+     * {@inheritDoc}
+     * @see \Game\Player\Base::_setType()
+     */
+    protected function _setType()
+    {
+        $this->type = self::TYPE;
+    }
 }
