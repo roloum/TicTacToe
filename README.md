@@ -18,17 +18,3 @@ Installation guide
  - cd into src/ and run "php composer.phar install" to install the Dependencies (Although, this step might not be necessary because the vendor folder is checked in the repo)
  - Run test cases: "phpunit --bootstrap src/vendor/autoload.php test/TicTacToe/CLI.php"
 
-Limitations
- - Due to time constraints, this program does not validate if the user exists within a channel.
- - If you challenge a user that does not exist in the channel, the channel will be locked until an administrator removes it from the database
-
-Features that were considered but are yet to be implemented due to time constraints:
- - Logging: Logging all queries in DEBUG mode
- - Update winner_player_id in Game table when there is a winner
- - Save Slack (and any other client tokens) in the database
- - Replace Models with ORM
-
-Potential features considered in the design (Features were not implemented due to time constraints)
- - Game challenge could be accepted or rejected
- - Players could choose the symbol they want to play with
- - Other type of board games, for example Connect 4
