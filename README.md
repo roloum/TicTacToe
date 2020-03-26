@@ -1,3 +1,6 @@
+#TicTacToe game for a coding exercise
+Game is supposed to be played by two users in a Slack channel
+
 Requirements
  - PHP 7.0.8+
  - MySQL 5.5.52+
